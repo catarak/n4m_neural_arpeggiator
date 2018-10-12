@@ -1,19 +1,25 @@
-Node.js for Max with TensorFlow.js example
-====
+# Neural Arpeggiator in Node.js for Max
 
-## What's This
+Currently [WIP]. 
 
-MNIST handwritten character recognition demo for MAX8.  
-Node.js for Max8 + Electron + React + Socket.io + Signature Pad + TensorFlow.js
+Port's [Tero Parviainen](https://github.com/teropa)'s [Neural Arpeggiator](https://codepen.io/teropa/pen/ddqEwj/) to Node For Max. Built from [aike](https://github.com/aike)'s [N4M Tensorflow Example](https://github.com/aike/n4m_tensorflow_example).
 
 ## How to use
+
+??? Not currently accurate
 
 1. cd n4m_tensorflow_example
 2. npm run setup
 3. open tf_mnist.maxpat via Max8
 
 ## Credit
-This project based on the following projects:  
+This project based on the following projects:
+
+Neural Arpeggiator
+https://codepen.io/teropa/pen/ddqEwj/
+
+Node For Max Tensorflow Example
+https://github.com/aike/n4m_tensorflow_example
 
 Node.js for Max with Electron + UI  
 https://github.com/yuichkun/n4m-electron-ui  

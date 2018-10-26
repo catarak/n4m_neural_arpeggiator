@@ -1,101 +1,37 @@
 import { Component } from 'react';
 import io from './utils/io';
-import * as tf from '@tensorflow/tfjs';
+import * as mm from '@magenta/music';
+
+// will need to io.emit to send sequence back, will need some io event to receive sequence
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loaded: false
+    };
+  }
 
 	componentDidMount() {
-	    // init SignaturePad
-	    this.drawElement = document.getElementById('draw-area');
-	    this.signaturePad = new SignaturePad(this.drawElement, {
-	       minWidth: 6,
-	       maxWidth: 6,
-	       penColor: 'white',
-	       backgroundColor: 'black',
-	    });
+	  
 
-	    // load pre-trained model
-	    tf.loadModel('./model/model.json')
-	      .then(pretrainedModel => {
-	        document.getElementById('predict-button').classList.remove('is-loading');
-	        this.model = pretrainedModel;
-	      });
+	  // load pre-trained model
+    this.rnn = new mm.MusicRNN(
+      'https://storage.googleapis.com/download.magenta.tensorflow.org/tfjs_checkpoints/music_rnn/chord_pitches_improv'
+    );
+    this.rnn.initialize().then(() => {
+      this.setState({loaded: true});
+    });
+
+    // TODO io event handlers
 	}
-
-    getImageData() {
-      const inputWidth = 28;
-      const inputHeight = 28;
-
-      // resize
-      const tmpCanvas = document.createElement('canvas').getContext('2d');
-      tmpCanvas.drawImage(this.drawElement, 0, 0, inputWidth, inputHeight);
-
-      // convert grayscale
-      let imageData = tmpCanvas.getImageData(0, 0, inputWidth, inputHeight);
-      for (let i = 0; i < imageData.data.length; i+=4) {
-        const avg = (imageData.data[i] + imageData.data[i+1] + imageData.data[i+2]) / 3;
-        imageData.data[i] = imageData.data[i+1] = imageData.data[i+2] = avg;
-      }
-
-      return imageData;
-    }
-
-    getAccuracyScores(imageData) {
-
-      const score = tf.tidy(() => {
-        // convert to tensor (shape: [width, height, channels])  
-        const channels = 1; // grayscale              
-        let input = tf.fromPixels(imageData, channels);
-
-        // normalized
-        input = tf.cast(input, 'float32').div(tf.scalar(255));
-
-        // reshape input format (shape: [batch_size, width, height, channels])
-        input = input.expandDims();
-
-        // predict
-        return this.model.predict(input).dataSync();
-      });
-
-      return score;
-    }
-
-    prediction() {
-      const imageData = this.getImageData();
-      const accuracyScores = this.getAccuracyScores(imageData);
-      const maxAccuracy = accuracyScores.indexOf(Math.max.apply(null, accuracyScores));
-
-//      console.log(maxAccuracy);
-	  io.emit('dispatch', maxAccuracy);
-    }
-
-    reset() {
-      this.signaturePad.clear();
-    }
-
 
   render() {
     return (
-	  <div className="container" style={{margin:'20px'}}>
-	    <div className="title" style={{fontSize:'24px'}}>Node.js for Max8 with TensorFlow.js</div>
-	    <div className="columns is-centered">
-	      <div className="column is-narrow">
-	        <canvas id="draw-area" width="280" height="280" style={{border: '2px solid'}}></canvas>
-	        <div className="field is-grouped">
-	          <p className="control">
-	            <a id="predict-button" className="button is-link is-loading" onClick={()=>{this.prediction();}}>
-	              Prediction
-	            </a>
-	          </p>
-	          <p className="control">
-	            <a className="button" onClick={()=>{this.reset();}}>
-	              Reset
-	            </a>
-	          </p>
-	        </div>
-	      </div>
-	    </div>
-	  </div>
+      <div className="container" style={{margin:'20px'}}>
+        <h1>Neural Arpeggiator in Node For Max</h1>
+        <p>{this.state.loaded}</p>
+      </div>
     );
   }
 }

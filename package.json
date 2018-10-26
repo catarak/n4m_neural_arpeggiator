@@ -1,17 +1,18 @@
 {
   "name": "n4m_tensorflow_example",
   "version": "1.0.0",
-  "description": "Node.js for Max with TensorFlow",
+  "description": "Neural Arpeggiator in Node For Max",
   "main": "./electron",
   "scripts": {
     "child-install": "cd ./electron && npm install",
     "child-build": "cd ./electron && npm run build",
     "setup": "npm install && npm run child-install && npm run child-build"
   },
-  "author": "aike",
+  "author": "Cassie Tarakajian",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "electron": "^3.0.1",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.1.1",
+    "tonal": "^2.0.0"
   }
 }

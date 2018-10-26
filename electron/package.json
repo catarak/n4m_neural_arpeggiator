@@ -1,5 +1,5 @@
 {
-  "name": "electron-tensorflow",
+  "name": "electron-magenta-music",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -8,10 +8,10 @@
     "start": "DEBUG=1 electron .",
     "develop": "npm run build; npm start"
   },
-  "author": "aike",
+  "author": "Cassie Tarakajian",
   "license": "ISC",
   "dependencies": {
-    "@tensorflow/tfjs": "^0.13.1",
+    "@magenta/music": "^1.2.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "socket.io-client": "^2.1.1"

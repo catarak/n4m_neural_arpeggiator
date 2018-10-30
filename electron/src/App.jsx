@@ -10,6 +10,7 @@ export default class App extends Component {
     this.state = {
       loaded: false
     };
+    this.seq = [];
   }
 
 	componentDidMount() {
@@ -20,17 +21,31 @@ export default class App extends Component {
       'https://storage.googleapis.com/download.magenta.tensorflow.org/tfjs_checkpoints/music_rnn/chord_pitches_improv'
     );
     this.rnn.initialize().then(() => {
+      console.log('initialized');
       this.setState({loaded: true});
     });
-
-    // TODO io event handlers
-	}
+    io.on("generate", (data) => {
+      let genSeq = [];
+      let generateNext = (data) => {
+        let { seq, chord, temperature, patternLength } = data;
+        this.rnn.continueSequence(seq, 20, temperature, [chord]).then(response => {
+          let flatNotes = response.notes.map(note => note.pitch);
+          genSeq = genSeq.concat(flatNotes);
+          io.emit("generatedComplete", genSeq);
+          if (flatNotes.length < patternLength) {
+            setTimeout(generateNext, 125); // 125 MS is for 8n at 120 BPM
+          }
+        });
+      }
+      generateNext(data);
+    });
+  }
 
   render() {
     return (
       <div className="container" style={{margin:'20px'}}>
         <h1>Neural Arpeggiator in Node For Max</h1>
-        <p>{this.state.loaded}</p>
+        <p>{this.state.loaded && "loaded"}</p>
       </div>
     );
   }

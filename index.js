@@ -15,7 +15,7 @@ io.on('connection', (socket) => {
   console.log('Socket is connected with Electron App');
 
   socket.on('generatedComplete', (genSeq) => {
-    MaxAPI.post(genSeq);
+    // MaxAPI.post(genSeq);
     MaxAPI.outlet(...genSeq);
   });
 });
@@ -45,6 +45,16 @@ MaxAPI.addHandler('note', (midiNote, velocity) => {
   }
 });
 
+MaxAPI.addHandler('setTemperature', (newTemp) => {
+  // is temp a number here?
+  temperature = newTemp;
+});
+
+MaxAPI.addHandler('setPatternLength', (newPatternLength) => {
+  // is pattern length a number here?
+  patternLength = newPatternLength;
+});
+
 const applyKeyChanges = (midiNote, velocity) => {
   // MaxAPI.post(`${midiNote}, ${velocity}`);
   if (velocity === 0) {
@@ -52,7 +62,7 @@ const applyKeyChanges = (midiNote, velocity) => {
   } else {
     notes.push(midiNote);
   }
-  MaxAPI.post(notes);
+  // MaxAPI.post(notes);
 }
 
 const detectChord = () => {

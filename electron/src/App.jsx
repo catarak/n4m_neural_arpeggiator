@@ -3,6 +3,7 @@ import io from './utils/io';
 import * as mm from '@magenta/music';
 
 // will need to io.emit to send sequence back, will need some io event to receive sequence
+// lol this doesn't actually need react, can probably take this out
 
 export default class App extends Component {
   constructor(props) {
@@ -32,8 +33,8 @@ export default class App extends Component {
           let flatNotes = response.notes.map(note => note.pitch);
           genSeq = genSeq.concat(flatNotes);
           io.emit("generatedComplete", genSeq);
-          if (flatNotes.length < patternLength) {
-            setTimeout(generateNext, 125); // 125 MS is for 8n at 120 BPM
+          if (genSeq.length < patternLength) {
+            setTimeout(generateNext.bind(this, data), 25); // 125 MS is for 8n at 120 BPM
           }
         });
       }
